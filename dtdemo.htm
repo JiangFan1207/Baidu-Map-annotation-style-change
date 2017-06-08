@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>亿迈克思全球服务网点</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <!--javascript-->
+    <!--<script src="jquery-1.9.1.js" type="text/javascript"></script>-->
+    <!--<script src="scripts/demo.js" type="text/javascript"></script>-->
+</head>
+<body>
+    <div class="demo_main">
+            <div style="height:768px; width: 100%;" id="map">
+            </div>
+            <script type="text/javascript">
+                var markerArr = [
+                    { title: "Berlin office, Germany", point: "13.241138,52.584329", address: "McFIT GmbH - Creative Office", contact:"e-mail：service@emkex.cn"},
+                    { title: "Korea Seoul Office", point: "126.95483,37.605717", address: "91 building", contact:"e-mail：service@emkex.cn"},
+					{ title: "Washington Office", point: "-77.026894,38.904071", address: "Rodwell Building Services", contact:"e-mail：service@emkex.cn" },
+                    { title: "Japan Tokyo Office", point: "139.694958,35.850924", address: "Main Entrance ", contact:"e-mail：service@emkex.cn" },
+                    { title: "Moscow office", point: "37.663549,55.818163", address: "ODS-2", contact:"e-mail：service@emkex.cn"},
+                    { title: "France Paris Office", point: "2.414329,48.89788", address: "R CrossFit", contact:"e-mail：service@emkex.cn" },
+                    { title: "San Marino Italy Office", point: "12.330472,43.940616", address: "Valmar Di Alfredo Aureli", contact:"e-mail：service@emkex.cn"},
+					{ title: "London Office", point: "-0.400458,51.518182", address: "Homelands Research", contact:"e-mail：service@emkex.cn"},
+                    { title: "Vietnam Hanoi Office", point: "105.733548,21.124478", address: "Khu Tap The 23 Hang Bai  ", contact:"e-mail：service@emkex.cn"},
+					{ title: "India New Delhi Office", point: "77.107354,28.76546", address: "Ashoka Apartments  ", contact:"e-mail：service@emkex.cn"},
+                    { title: "香港办事处", point: "114.164109,22.291435", address: "香港特别行政区中西区砵典乍街16", contact:"e-mail：service@emkex.cn"},
+                    { title: "赣州办事处", point: "114.932196,25.871611", address: "江西省赣州市章贡区文明大道52号", contact:"电话号码：15867835386（王女士）"},
+					{ title: "台湾台北办事处", point: "121.511529,25.092992", address: "台湾省台北市信义区中坡北路74号  ", contact:"电话号码：13967843261（陈先生）"},
+                    { title: "包头办事处", point: "109.843044,40.671029", address: "内蒙古自治区包头市昆都仑区阿尔丁大街89号", contact:"电话号码：15394315596（林女士）" },
+                    { title: "北京办事处", point: "116.383283,39.959828", address: "北京市海淀区万寿路4-34", contact:"电话号码：13685708658（袁先生）" },
+					{ title: "深圳办事处", point: "114.060624,22.571518", address: "广东省深圳市南山区茶光路  ", contact:"电话号码：18667426652（吴先生）"},
+                    { title: "苏州办事处", point: "120.591665,31.322191", address: "江苏省苏州市相城区建元路  ", contact:"电话号码：15958293988（黄女士）"},
+                    { title: "青岛办事处", point: "120.389294,36.138732", address: "山东省青岛市市南区澳门路", contact:"电话号码：13819876052（徐女士）"},
+                ];
+
+                function map_init() {
+                    var map = new BMap.Map("map"); // 创建Map实例
+                    var point = new BMap.Point(78.107354,30.76546); //地图中心点
+                    map.centerAndZoom(point, 3); // 初始化地图,设置中心点坐标和地图级别。
+                    map.enableScrollWheelZoom(true); //启用滚轮放大缩小
+                    //向地图中添加缩放控件
+                    var ctrlNav = new window.BMap.NavigationControl({
+                        anchor: BMAP_ANCHOR_TOP_LEFT,
+                        type: BMAP_NAVIGATION_CONTROL_LARGE
+                    });
+                    map.addControl(ctrlNav);
+
+                    //向地图中添加缩略图控件
+                    var ctrlOve = new window.BMap.OverviewMapControl({
+                        anchor: BMAP_ANCHOR_BOTTOM_RIGHT,
+                        isOpen: 1
+                    });
+                    map.addControl(ctrlOve);
+
+                    //向地图中添加比例尺控件
+                    var ctrlSca = new window.BMap.ScaleControl({
+                        anchor: BMAP_ANCHOR_BOTTOM_LEFT
+                    });
+                    map.addControl(ctrlSca);
+
+                    var point = new Array(); //存放标注点经纬信息的数组
+                    var marker = new Array(); //存放标注点对象的数组
+                    var info = new Array(); //存放提示信息窗口对象的数组
+                    
+					//区别标注
+					for( var j = 0;j < 10; j++){
+						var myIcon = new BMap.Icon("bz.png", new BMap.Size(30, 30)/*, {
+							// 指定定位位置
+							offset: new BMap.Size(10, 25),
+							// 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置   
+							imageOffset: new BMap.Size(0, 0 - 11 * 25) // 设置图片偏移  
+						}*/);
+						var p0 = markerArr[j].point.split(",")[0]; //
+                        var p1 = markerArr[j].point.split(",")[1]; //按照原数组的point格式将地图点坐标的经纬度分别提出来
+                        point[j] = new window.BMap.Point(p0, p1); //循环生成新的地图点
+                        marker[j] = new window.BMap.Marker(point[j],{icon: myIcon});
+						// 创建标注对象并添加到地图 
+						map.addOverlay(marker[j]);
+						
+						marker[j].setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+                       /* var label = new window.BMap.Label(markerArr[i].title, { offset: new window.BMap.Size(20, -10) });
+                        marker[i].setLabel(label);*/
+                        info[j] = new window.BMap.InfoWindow("<p style=’font-size:12px;lineheight:1.8em;’>" + markerArr[j].title + "</br>address：" + markerArr[j].address +"</br>" + markerArr[j].contact + "</br></p>"); // 创建信息窗口对象
+					}
+						marker[0].addEventListener("mouseover", function () {
+							this.openInfoWindow(info[0]);
+						});
+						marker[1].addEventListener("mouseover", function () {
+							this.openInfoWindow(info[1]);
+						});
+						marker[2].addEventListener("mouseover", function () {
+							this.openInfoWindow(info[2]);
+						});
+						marker[3].addEventListener("mouseover", function () {
+							this.openInfoWindow(info[3]);
+						});
+						marker[4].addEventListener("mouseover", function () {
+							this.openInfoWindow(info[4]);
+						});
+						marker[5].addEventListener("mouseover", function () {
+							this.openInfoWindow(info[5]);
+						});
+						marker[6].addEventListener("mouseover", function () {
+							this.openInfoWindow(info[6]);
+						});
+						marker[7].addEventListener("mouseover", function () {
+							this.openInfoWindow(info[7]);
+						});
+						marker[8].addEventListener("mouseover", function () {
+							this.openInfoWindow(info[8]);
+						});
+						marker[9].addEventListener("mouseover", function () {
+							this.openInfoWindow(info[9]);
+						});
+					
+					for (var i = 10; i < markerArr.length; i++) {
+                        var p0 = markerArr[i].point.split(",")[0]; //
+                        var p1 = markerArr[i].point.split(",")[1]; //按照原数组的point格式将地图点坐标的经纬度分别提出来
+                        point[i] = new window.BMap.Point(p0, p1); //循环生成新的地图点
+                        marker[i] = new window.BMap.Marker(point[i]); //按照地图点坐标生成标记
+                        map.addOverlay(marker[i]);
+						
+                        marker[i].setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+                       /* var label = new window.BMap.Label(markerArr[i].title, { offset: new window.BMap.Size(20, -10) });
+                        marker[i].setLabel(label);*/
+                        info[i] = new window.BMap.InfoWindow("<p style=’font-size:12px;lineheight:1.8em;’>" + markerArr[i].title + "</br>地址：" + markerArr[i].address + "</br>" + markerArr[i].contact +"</br></p>"); // 创建信息窗口对象
+                    }
+					
+                    
+					marker[10].addEventListener("mouseover", function () {
+                        this.openInfoWindow(info[10]);
+                    });
+					marker[11].addEventListener("mouseover", function () {
+                        this.openInfoWindow(info[11]);
+                    });
+					marker[12].addEventListener("mouseover", function () {
+                        this.openInfoWindow(info[12]);
+                    });
+					marker[13].addEventListener("mouseover", function () {
+                        this.openInfoWindow(info[13]);
+                    });
+					marker[14].addEventListener("mouseover", function () {
+                        this.openInfoWindow(info[14]);
+                    });
+					marker[15].addEventListener("mouseover", function () {
+                        this.openInfoWindow(info[15]);
+                    });
+					marker[16].addEventListener("mouseover", function () {
+                        this.openInfoWindow(info[16]);
+                    });
+					marker[17].addEventListener("mouseover", function () {
+                        this.openInfoWindow(info[17]);
+                    });
+              
+				}
+				
+
+                //异步调用百度js
+                function map_load() {
+                    var load = document.createElement("script");
+                    load.src = "http://api.map.baidu.com/api?v=2.0&callback=map_init";
+                    document.body.appendChild(load);
+                }
+                window.onload = map_load;
+            </script>
+    </div>
+</body>
+</html>
